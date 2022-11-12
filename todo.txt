@@ -1,0 +1,11 @@
+1) add logger to server
+2) setup shutdown
+3) recovery panic. Add 500 code to answer
+4) think about indexes
+5) add error handling with code
+6) how to configure kafka
+
+
+Improvement:
+1) cron to retry failed kafka messages
+2) precreated image with goose

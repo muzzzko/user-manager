@@ -1,0 +1,50 @@
+services:
+  user-manager:
+    image: user-manager:latest
+    env_file:
+      .env
+    ports:
+      - 8000:8000
+    depends_on:
+      - pgdb
+      - zookeeper
+      - kafka
+
+  migration:
+    image: migration-goose
+    depends_on:
+      - pgdb
+
+  pgdb:
+    image: postgres:15
+    environment:
+      - POSTGRES_PASSWORD=user_manager
+      - POSTGRES_USER=user_manager
+    ports:
+      - 5432:5432
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - 2181:2181
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - "9093:9093"
+    expose:
+      - "9092"
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_HOST_NAME: "kafka"
+      KAFKA_ADVERTISED_PORT: "9092"
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:9092,OUTSIDE://localhost:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9092,OUTSIDE://0.0.0.0:9093
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - zookeeper
