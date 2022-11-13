@@ -24,13 +24,15 @@ func TestUpdate(t *testing.T) {
 
 	t.Run("successful updating", func(tt *testing.T) {
 		paramsForCreating := user.NewCreateUserParams()
-		paramsForCreating.Body = &models.UserInfo{
-			FirstName: "John",
-			LastName:  "Smith",
-			Nickname:  "John1337",
-			Email:     "johnsmith@gmail.com",
-			Password:  "42adfAfLK",
-			CountryID: 1,
+		paramsForCreating.Body = &models.CreatingUser{
+			UserInfo: models.UserInfo{
+				FirstName:   "Egor",
+				LastName:    "Shestakov",
+				Nickname:    "muzzzko",
+				Email:       "johnsmith@gmail.com",
+				CountryCode: "UK",
+			},
+			Password: "42adfAfLK",
 		}
 
 		res, err := umClient.User.CreateUser(paramsForCreating)
@@ -52,16 +54,16 @@ func TestUpdate(t *testing.T) {
 		}
 
 		paramsForUpdating := user.NewUpdateUserParams()
-		paramsForUpdating.Body = &models.User{
+		paramsForUpdating.Body = &models.UpdatingUser{
 			UserInfo: models.UserInfo{
-				FirstName: userEntity.FirstName,
-				LastName:  userEntity.LastName,
-				Nickname:  userEntity.Nickname,
-				Email:     userEntity.Email,
-				Password:  pswd,
-				CountryID: userEntity.Country.ID,
+				FirstName:   userEntity.FirstName,
+				LastName:    userEntity.LastName,
+				Nickname:    userEntity.Nickname,
+				Email:       userEntity.Email,
+				CountryCode: userEntity.Country.Code,
 			},
-			ID: res.Payload.ID,
+			Password: pswd,
+			ID:       res.Payload.ID,
 		}
 
 		_, err = umClient.User.UpdateUser(paramsForUpdating)
@@ -74,31 +76,34 @@ func TestUpdate(t *testing.T) {
 	})
 
 	t.Run("update user with email which already belongs to another user", func(tt *testing.T) {
-		model := models.UserInfo{
-			FirstName: "Egor",
-			LastName:  "Shestakov",
-			Nickname:  "muzzzko",
-			Email:     "existedemail@gmail.com",
-			Password:  "42adfAfLK",
-			CountryID: 1,
+		userInfo := models.UserInfo{
+			FirstName:   "Egor",
+			LastName:    "Shestakov",
+			Nickname:    "muzzzko",
+			Email:       "existedemail@gmail.com",
+			CountryCode: "UK",
 		}
 
 		paramsForCreating := user.NewCreateUserParams()
-		paramsForCreating.Body = &model
+		paramsForCreating.Body = &models.CreatingUser{
+			UserInfo: userInfo,
+			Password: "42adfAfLK",
+		}
 
 		_, err := umClient.User.CreateUser(paramsForCreating)
 		assert.Nil(tt, err)
 
-		model.Email = "anotheremail@gmail.com"
+		paramsForCreating.Body.Email = "anotheremail@gmail.com"
 
 		res, err := umClient.User.CreateUser(paramsForCreating)
 		assert.Nil(tt, err)
 
-		model.Email = "existedemail@gmail.com"
+		userInfo.Email = "existedemail@gmail.com"
 
 		paramsForUpdating := user.NewUpdateUserParams()
-		paramsForUpdating.Body = &models.User{
-			UserInfo: model,
+		paramsForUpdating.Body = &models.UpdatingUser{
+			UserInfo: userInfo,
+			Password: "42adfAfLK",
 			ID:       res.Payload.ID,
 		}
 
@@ -109,16 +114,16 @@ func TestUpdate(t *testing.T) {
 
 	t.Run("update user with invalid email", func(tt *testing.T) {
 		params := user.NewUpdateUserParams()
-		params.Body = &models.User{
+		params.Body = &models.UpdatingUser{
 			UserInfo: models.UserInfo{
-				FirstName: "Egor",
-				LastName:  "Shestakov",
-				Nickname:  "muzzzko",
-				Email:     "invalid",
-				Password:  "42adfAfLK",
-				CountryID: 1,
+				FirstName:   "Egor",
+				LastName:    "Shestakov",
+				Nickname:    "muzzzko",
+				Email:       "invalid",
+				CountryCode: "UK",
 			},
-			ID: strfmt.UUID(uuid.New().String()),
+			Password: "42adfAfLK",
+			ID:       strfmt.UUID(uuid.New().String()),
 		}
 
 		_, err := umClient.User.UpdateUser(params)
@@ -128,16 +133,16 @@ func TestUpdate(t *testing.T) {
 
 	t.Run("update user with not existed country", func(tt *testing.T) {
 		params := user.NewUpdateUserParams()
-		params.Body = &models.User{
+		params.Body = &models.UpdatingUser{
 			UserInfo: models.UserInfo{
-				FirstName: "Egor",
-				LastName:  "Shestakov",
-				Nickname:  "muzzzko",
-				Email:     "johnsmith@gmail.com",
-				Password:  "42adfAfLK",
-				CountryID: 3544586,
+				FirstName:   "Egor",
+				LastName:    "Shestakov",
+				Nickname:    "muzzzko",
+				Email:       "johnsmith@gmail.com",
+				CountryCode: "TK",
 			},
-			ID: strfmt.UUID(uuid.New().String()),
+			Password: "42adfAfLK",
+			ID:       strfmt.UUID(uuid.New().String()),
 		}
 
 		_, err := umClient.User.UpdateUser(params)
@@ -147,16 +152,16 @@ func TestUpdate(t *testing.T) {
 
 	t.Run("update user which doesn't exist", func(tt *testing.T) {
 		params := user.NewUpdateUserParams()
-		params.Body = &models.User{
+		params.Body = &models.UpdatingUser{
 			UserInfo: models.UserInfo{
-				FirstName: "Egor",
-				LastName:  "Shestakov",
-				Nickname:  "muzzzko",
-				Email:     "johnsmith@gmail.com",
-				Password:  "42adfAfLK",
-				CountryID: 1,
+				FirstName:   "Egor",
+				LastName:    "Shestakov",
+				Nickname:    "muzzzko",
+				Email:       "johnsmith@gmail.com",
+				CountryCode: "UK",
 			},
-			ID: strfmt.UUID(uuid.New().String()),
+			Password: "42adfAfLK",
+			ID:       strfmt.UUID(uuid.New().String()),
 		}
 
 		_, err := umClient.User.UpdateUser(params)

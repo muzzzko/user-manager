@@ -1,6 +1,12 @@
 package entity
 
-import "github.com/go-openapi/strfmt"
+import (
+	"fmt"
+
+	"github.com/go-openapi/strfmt"
+
+	"github/user-manager/internal/constant"
+)
 
 type User struct {
 	ID           strfmt.UUID
@@ -10,4 +16,10 @@ type User struct {
 	PasswordHash string
 	Email        string
 	Country      Country
+}
+
+func (u User) GetSearchFields() []string {
+	return []string{
+		fmt.Sprintf("%s:%s", constant.CountryCodeFilter, u.Country.Code),
+	}
 }

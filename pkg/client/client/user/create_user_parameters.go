@@ -67,7 +67,7 @@ type CreateUserParams struct {
 
 	   User information for creating
 	*/
-	Body *models.UserInfo
+	Body *models.CreatingUser
 
 	timeout    time.Duration
 	Context    context.Context
@@ -123,13 +123,13 @@ func (o *CreateUserParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithBody adds the body to the create user params
-func (o *CreateUserParams) WithBody(body *models.UserInfo) *CreateUserParams {
+func (o *CreateUserParams) WithBody(body *models.CreatingUser) *CreateUserParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the create user params
-func (o *CreateUserParams) SetBody(body *models.UserInfo) {
+func (o *CreateUserParams) SetBody(body *models.CreatingUser) {
 	o.Body = body
 }
 

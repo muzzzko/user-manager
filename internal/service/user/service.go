@@ -2,11 +2,12 @@ package user
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/go-openapi/strfmt"
 	"github.com/google/uuid"
 
-	"github/user-manager/internal/entity"
+	"github/user-manager/internal/constant"
 	"github/user-manager/internal/generated/server/models"
 	"github/user-manager/pkg/event"
 	"github/user-manager/tools/logger"
@@ -31,28 +32,23 @@ func NewService(
 	}
 }
 
-func (s *Service) CreateUser(ctx context.Context, userInfo models.UserInfo) (strfmt.UUID, error) {
+func (s *Service) CreateUser(ctx context.Context, creatingUser models.CreatingUser) (strfmt.UUID, error) {
 	ctxLogger := logger.GetFromContext(ctx)
 
-	country, err := s.countryRepo.GetCountryByID(ctx, userInfo.CountryID)
+	country, err := s.countryRepo.GetCountryByCode(ctx, creatingUser.CountryCode)
 	if err != nil {
 		return "", err
 	}
 
-	passwordHash, err := password.Hash(userInfo.Password)
+	passwordHash, err := password.Hash(creatingUser.Password)
 	if err != nil {
 		return "", err
 	}
 
-	user := entity.User{
-		ID:           strfmt.UUID(uuid.New().String()),
-		FirstName:    userInfo.FirstName,
-		LastName:     userInfo.LastName,
-		Nickname:     userInfo.Nickname,
-		PasswordHash: passwordHash,
-		Email:        userInfo.Email,
-		Country:      country,
-	}
+	user := mapModelUserInfoToEntityUser(creatingUser.UserInfo)
+	user.ID = strfmt.UUID(uuid.New().String())
+	user.Country = country
+	user.PasswordHash = passwordHash
 
 	if err := s.userRepo.Save(ctx, user); err != nil {
 		return "", err
@@ -85,39 +81,53 @@ func (s *Service) DeleteUser(ctx context.Context, userID strfmt.UUID) error {
 	return nil
 }
 
-func (s *Service) UpdateUser(ctx context.Context, user models.User) (models.User, error) {
+func (s *Service) UpdateUser(ctx context.Context, updatingUser models.UpdatingUser) (models.User, error) {
 	ctxLogger := logger.GetFromContext(ctx)
 
-	country, err := s.countryRepo.GetCountryByID(ctx, user.CountryID)
+	country, err := s.countryRepo.GetCountryByCode(ctx, updatingUser.CountryCode)
 	if err != nil {
 		return models.User{}, err
 	}
 
-	passwordHash, err := password.Hash(user.Password)
+	passwordHash, err := password.Hash(updatingUser.Password)
 	if err != nil {
 		return models.User{}, err
 	}
 
-	newUser := entity.User{
-		ID:           user.ID,
-		FirstName:    user.FirstName,
-		LastName:     user.LastName,
-		Nickname:     user.Nickname,
-		PasswordHash: passwordHash,
-		Email:        user.Email,
-		Country:      country,
-	}
+	user := mapModelUserInfoToEntityUser(updatingUser.UserInfo)
+	user.ID = updatingUser.ID
+	user.Country = country
+	user.PasswordHash = passwordHash
 
-	if err := s.userRepo.Update(ctx, newUser); err != nil {
+	if err := s.userRepo.Update(ctx, user); err != nil {
 		return models.User{}, err
 	}
 
-	if err := s.userEventProducer.Produce(ctx, user.ID, event.UpdateAction); err != nil {
+	if err := s.userEventProducer.Produce(ctx, updatingUser.ID, event.UpdateAction); err != nil {
 		ctxLogger.
 			WithError(err).
-			WithUserID(user.ID).
+			WithUserID(updatingUser.ID).
 			Error("fail produce event while updating user")
 	}
 
-	return user, nil
+	return mapEntityUserToModelUser(user), nil
+}
+
+func (s *Service) GetUsersByFilters(
+	ctx context.Context,
+	filters models.Filters,
+	limit int64,
+	next *string,
+) ([]*models.User, error) {
+	filtersMap := make(map[string]string)
+	if filters.CountryCode != nil {
+		filtersMap[constant.CountryCodeFilter] = fmt.Sprintf("%s", *filters.CountryCode)
+	}
+
+	users, err := s.userRepo.GetUsersByFilters(ctx, filtersMap, limit, next)
+	if err != nil {
+		return nil, err
+	}
+
+	return mapEntityUsersToModelUsers(users), nil
 }

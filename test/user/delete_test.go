@@ -1,6 +1,7 @@
 package user
 
 import (
+	"log"
 	"testing"
 
 	"github.com/jackc/pgx/v5"
@@ -12,16 +13,22 @@ import (
 )
 
 func TestDelete(t *testing.T) {
+	if err := postgres.TruncateUserProfile(); err != nil {
+		log.Fatalf("fail to truncate user profile table")
+	}
+
 	t.Run("successful deleting", func(tt *testing.T) {
 		t.Run("delete user", func(tt *testing.T) {
 			paramsForCreating := user.NewCreateUserParams()
-			paramsForCreating.Body = &models.UserInfo{
-				FirstName: "Egor",
-				LastName:  "Shestakov",
-				Nickname:  "muzzzko",
-				Email:     "userfordeleting@gmail.com",
-				Password:  "42adfAfLK",
-				CountryID: 1,
+			paramsForCreating.Body = &models.CreatingUser{
+				UserInfo: models.UserInfo{
+					FirstName:   "Egor",
+					LastName:    "Shestakov",
+					Nickname:    "muzzzko",
+					Email:       "johnsmith@gmail.com",
+					CountryCode: "UK",
+				},
+				Password: "42adfAfLK",
 			}
 
 			res, err := umClient.User.CreateUser(paramsForCreating)

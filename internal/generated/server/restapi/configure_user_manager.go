@@ -117,6 +117,7 @@ func configureHandlers(api *operations.UserManagerAPI, cfg config.Service, logge
 	api.UserCreateUserHandler = user.CreateUserHandlerFunc(userHdlr.CreateUser)
 	api.UserDeleteUserHandler = user.DeleteUserHandlerFunc(userHdlr.DeleteUser)
 	api.UserUpdateUserHandler = user.UpdateUserHandlerFunc(userHdlr.UpdateUser)
+	api.UserGetUsersByFiltersHandler = user.GetUsersByFiltersHandlerFunc(userHdlr.GetUsersByFilters)
 }
 
 // As soon as server is initialized but not run yet, this function will be called.

@@ -12,45 +12,43 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/validate"
-
-	"github/user-manager/internal/generated/server/models"
 )
 
-// NewCreateUserParams creates a new CreateUserParams object
+// NewGetUsersByFiltersParams creates a new GetUsersByFiltersParams object
 //
 // There are no default values defined in the spec.
-func NewCreateUserParams() CreateUserParams {
+func NewGetUsersByFiltersParams() GetUsersByFiltersParams {
 
-	return CreateUserParams{}
+	return GetUsersByFiltersParams{}
 }
 
-// CreateUserParams contains all the bound params for the create user operation
+// GetUsersByFiltersParams contains all the bound params for the get users by filters operation
 // typically these are obtained from a http.Request
 //
-// swagger:parameters createUser
-type CreateUserParams struct {
+// swagger:parameters getUsersByFilters
+type GetUsersByFiltersParams struct {
 
 	// HTTP Request Object
 	HTTPRequest *http.Request `json:"-"`
 
-	/*User information for creating
+	/*Filters for user searching
 	  In: body
 	*/
-	Body *models.CreatingUser
+	Body GetUsersByFiltersBody
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
 // for simple values it will use straight method calls.
 //
-// To ensure default values, the struct must have been initialized with NewCreateUserParams() beforehand.
-func (o *CreateUserParams) BindRequest(r *http.Request, route *middleware.MatchedRoute) error {
+// To ensure default values, the struct must have been initialized with NewGetUsersByFiltersParams() beforehand.
+func (o *GetUsersByFiltersParams) BindRequest(r *http.Request, route *middleware.MatchedRoute) error {
 	var res []error
 
 	o.HTTPRequest = r
 
 	if runtime.HasBody(r) {
 		defer r.Body.Close()
-		var body models.CreatingUser
+		var body GetUsersByFiltersBody
 		if err := route.Consumer.Consume(r.Body, &body); err != nil {
 			res = append(res, errors.NewParseError("body", "body", "", err))
 		} else {
@@ -65,7 +63,7 @@ func (o *CreateUserParams) BindRequest(r *http.Request, route *middleware.Matche
 			}
 
 			if len(res) == 0 {
-				o.Body = &body
+				o.Body = body
 			}
 		}
 	}

@@ -22,16 +22,16 @@ func NewRepository(slave *pgxpool.Pool) *Repository {
 	}
 }
 
-func (r *Repository) GetCountryByID(ctx context.Context, id int64) (entity.Country, error) {
+func (r *Repository) GetCountryByCode(ctx context.Context, code string) (entity.Country, error) {
 	query := `
 	select 
 	    id, code 
 	from
 	    country
-	where id = $1
+	where code = $1
 `
 
-	res := r.slave.QueryRow(ctx, query, id)
+	res := r.slave.QueryRow(ctx, query, code)
 
 	country := entity.Country{}
 	err := res.Scan(&country.ID, &country.Code)

@@ -26,7 +26,7 @@ type CreateUserCreated struct {
 	/*
 	  In: Body
 	*/
-	Payload *CreateUserCreatedBody `json:"body,omitempty"`
+	Payload *models.CreateUserResponse `json:"body,omitempty"`
 }
 
 // NewCreateUserCreated creates CreateUserCreated with default headers values
@@ -36,13 +36,13 @@ func NewCreateUserCreated() *CreateUserCreated {
 }
 
 // WithPayload adds the payload to the create user created response
-func (o *CreateUserCreated) WithPayload(payload *CreateUserCreatedBody) *CreateUserCreated {
+func (o *CreateUserCreated) WithPayload(payload *models.CreateUserResponse) *CreateUserCreated {
 	o.Payload = payload
 	return o
 }
 
 // SetPayload sets the payload to the create user created response
-func (o *CreateUserCreated) SetPayload(payload *CreateUserCreatedBody) {
+func (o *CreateUserCreated) SetPayload(payload *models.CreateUserResponse) {
 	o.Payload = payload
 }
 

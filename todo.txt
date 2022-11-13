@@ -9,3 +9,6 @@
 Improvement:
 1) cron to retry failed kafka messages
 2) precreated image with goose
+3) pagination works until PO doesn't want sort by created_at. Isnot good desition id = uuid
+4) add prometheus
+5) set linter

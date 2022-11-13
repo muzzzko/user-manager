@@ -19,11 +19,12 @@ import (
 // swagger:model UserInfo
 type UserInfo struct {
 
-	// User country identifier
-	// Example: 1
+	// User country code
+	// Example: UK
 	// Required: true
-	// Minimum: 1
-	CountryID int64 `json:"country_id"`
+	// Max Length: 2
+	// Min Length: 2
+	CountryCode string `json:"country_code"`
 
 	// User email
 	// Example: johnsmith@gmail.com
@@ -52,20 +53,13 @@ type UserInfo struct {
 	// Max Length: 32
 	// Min Length: 2
 	Nickname string `json:"nickname"`
-
-	// User password. It must contains capital, small letters and digit
-	// Example: gD1wScAs
-	// Required: true
-	// Max Length: 256
-	// Min Length: 8
-	Password string `json:"password"`
 }
 
 // Validate validates this user info
 func (m *UserInfo) Validate(formats strfmt.Registry) error {
 	var res []error
 
-	if err := m.validateCountryID(formats); err != nil {
+	if err := m.validateCountryCode(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -85,23 +79,23 @@ func (m *UserInfo) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
-	if err := m.validatePassword(formats); err != nil {
-		res = append(res, err)
-	}
-
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
 	return nil
 }
 
-func (m *UserInfo) validateCountryID(formats strfmt.Registry) error {
+func (m *UserInfo) validateCountryCode(formats strfmt.Registry) error {
 
-	if err := validate.Required("country_id", "body", int64(m.CountryID)); err != nil {
+	if err := validate.RequiredString("country_code", "body", m.CountryCode); err != nil {
 		return err
 	}
 
-	if err := validate.MinimumInt("country_id", "body", m.CountryID, 1, false); err != nil {
+	if err := validate.MinLength("country_code", "body", m.CountryCode, 2); err != nil {
+		return err
+	}
+
+	if err := validate.MaxLength("country_code", "body", m.CountryCode, 2); err != nil {
 		return err
 	}
 
@@ -170,23 +164,6 @@ func (m *UserInfo) validateNickname(formats strfmt.Registry) error {
 	}
 
 	if err := validate.MaxLength("nickname", "body", m.Nickname, 32); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *UserInfo) validatePassword(formats strfmt.Registry) error {
-
-	if err := validate.RequiredString("password", "body", m.Password); err != nil {
-		return err
-	}
-
-	if err := validate.MinLength("password", "body", m.Password, 8); err != nil {
-		return err
-	}
-
-	if err := validate.MaxLength("password", "body", m.Password, 256); err != nil {
 		return err
 	}
 

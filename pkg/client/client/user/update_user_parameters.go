@@ -67,7 +67,7 @@ type UpdateUserParams struct {
 
 	   User information for updating
 	*/
-	Body *models.User
+	Body *models.UpdatingUser
 
 	timeout    time.Duration
 	Context    context.Context
@@ -123,13 +123,13 @@ func (o *UpdateUserParams) SetHTTPClient(client *http.Client) {
 }
 
 // WithBody adds the body to the update user params
-func (o *UpdateUserParams) WithBody(body *models.User) *UpdateUserParams {
+func (o *UpdateUserParams) WithBody(body *models.UpdatingUser) *UpdateUserParams {
 	o.SetBody(body)
 	return o
 }
 
 // SetBody adds the body to the update user params
-func (o *UpdateUserParams) SetBody(body *models.User) {
+func (o *UpdateUserParams) SetBody(body *models.UpdatingUser) {
 	o.Body = body
 }
 

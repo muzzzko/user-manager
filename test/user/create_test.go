@@ -37,13 +37,15 @@ func TestCreate(t *testing.T) {
 		}
 
 		params := user.NewCreateUserParams()
-		params.Body = &models.UserInfo{
-			FirstName: userEntity.FirstName,
-			LastName:  userEntity.LastName,
-			Nickname:  userEntity.Nickname,
-			Email:     userEntity.Email,
-			Password:  pswd,
-			CountryID: userEntity.Country.ID,
+		params.Body = &models.CreatingUser{
+			UserInfo: models.UserInfo{
+				FirstName:   userEntity.FirstName,
+				LastName:    userEntity.LastName,
+				Nickname:    userEntity.Nickname,
+				Email:       userEntity.Email,
+				CountryCode: userEntity.Country.Code,
+			},
+			Password: pswd,
 		}
 
 		res, err := umClient.User.CreateUser(params)
@@ -57,13 +59,15 @@ func TestCreate(t *testing.T) {
 
 	t.Run("create user with existed email", func(tt *testing.T) {
 		params := user.NewCreateUserParams()
-		params.Body = &models.UserInfo{
-			FirstName: "Egor",
-			LastName:  "Shestakov",
-			Nickname:  "muzzzko",
-			Email:     "existedemail@gmail.com",
-			Password:  "42adfAfLK",
-			CountryID: 1,
+		params.Body = &models.CreatingUser{
+			UserInfo: models.UserInfo{
+				FirstName:   "Egor",
+				LastName:    "Shestakov",
+				Nickname:    "muzzzko",
+				Email:       "existedemail@gmail.com",
+				CountryCode: "UK",
+			},
+			Password: "42adfAfLK",
 		}
 
 		_, err := umClient.User.CreateUser(params)
@@ -76,13 +80,15 @@ func TestCreate(t *testing.T) {
 
 	t.Run("create user with invalid email", func(tt *testing.T) {
 		params := user.NewCreateUserParams()
-		params.Body = &models.UserInfo{
-			FirstName: "Egor",
-			LastName:  "Shestakov",
-			Nickname:  "muzzzko",
-			Email:     "invalid",
-			Password:  "42adfAfLK",
-			CountryID: 1,
+		params.Body = &models.CreatingUser{
+			UserInfo: models.UserInfo{
+				FirstName:   "Egor",
+				LastName:    "Shestakov",
+				Nickname:    "muzzzko",
+				Email:       "invalid",
+				CountryCode: "UK",
+			},
+			Password: "42adfAfLK",
 		}
 
 		_, err := umClient.User.CreateUser(params)
@@ -92,13 +98,15 @@ func TestCreate(t *testing.T) {
 
 	t.Run("create user with not existed country", func(tt *testing.T) {
 		params := user.NewCreateUserParams()
-		params.Body = &models.UserInfo{
-			FirstName: "Egor",
-			LastName:  "Shestakov",
-			Nickname:  "muzzzko",
-			Email:     "johnsmith@gmail.com",
-			Password:  "42adfAfLK",
-			CountryID: 435345345,
+		params.Body = &models.CreatingUser{
+			UserInfo: models.UserInfo{
+				FirstName:   "Egor",
+				LastName:    "Shestakov",
+				Nickname:    "muzzzko",
+				Email:       "johnsmith@gmail.com",
+				CountryCode: "TK",
+			},
+			Password: "42adfAfLK",
 		}
 
 		_, err := umClient.User.CreateUser(params)

@@ -10,10 +10,17 @@ type userRepository interface {
 	Save(ctx context.Context, user entity.User) error
 	Delete(ctx context.Context, userID strfmt.UUID) error
 	Update(ctx context.Context, user entity.User) error
+
+	GetUsersByFilters(
+		ctx context.Context,
+		filters map[string]string,
+		limit int64,
+		next *string,
+	) ([]entity.User, error)
 }
 
 type countryRepository interface {
-	GetCountryByID(ctx context.Context, id int64) (entity.Country, error)
+	GetCountryByCode(ctx context.Context, code string) (entity.Country, error)
 }
 
 type userEventProducer interface {

@@ -54,6 +54,9 @@ func NewUserManagerAPI(spec *loads.Document) *UserManagerAPI {
 		UserDeleteUserHandler: user.DeleteUserHandlerFunc(func(params user.DeleteUserParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.DeleteUser has not yet been implemented")
 		}),
+		UserGetUsersByFiltersHandler: user.GetUsersByFiltersHandlerFunc(func(params user.GetUsersByFiltersParams) middleware.Responder {
+			return middleware.NotImplemented("operation user.GetUsersByFilters has not yet been implemented")
+		}),
 		UserUpdateUserHandler: user.UpdateUserHandlerFunc(func(params user.UpdateUserParams) middleware.Responder {
 			return middleware.NotImplemented("operation user.UpdateUser has not yet been implemented")
 		}),
@@ -99,6 +102,8 @@ type UserManagerAPI struct {
 	UserCreateUserHandler user.CreateUserHandler
 	// UserDeleteUserHandler sets the operation handler for the delete user operation
 	UserDeleteUserHandler user.DeleteUserHandler
+	// UserGetUsersByFiltersHandler sets the operation handler for the get users by filters operation
+	UserGetUsersByFiltersHandler user.GetUsersByFiltersHandler
 	// UserUpdateUserHandler sets the operation handler for the update user operation
 	UserUpdateUserHandler user.UpdateUserHandler
 
@@ -186,6 +191,9 @@ func (o *UserManagerAPI) Validate() error {
 	}
 	if o.UserDeleteUserHandler == nil {
 		unregistered = append(unregistered, "user.DeleteUserHandler")
+	}
+	if o.UserGetUsersByFiltersHandler == nil {
+		unregistered = append(unregistered, "user.GetUsersByFiltersHandler")
 	}
 	if o.UserUpdateUserHandler == nil {
 		unregistered = append(unregistered, "user.UpdateUserHandler")
@@ -290,6 +298,10 @@ func (o *UserManagerAPI) initHandlerCache() {
 		o.handlers["DELETE"] = make(map[string]http.Handler)
 	}
 	o.handlers["DELETE"]["/users/{userID}"] = user.NewDeleteUser(o.context, o.UserDeleteUserHandler)
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/users"] = user.NewGetUsersByFilters(o.context, o.UserGetUsersByFiltersHandler)
 	if o.handlers["PUT"] == nil {
 		o.handlers["PUT"] = make(map[string]http.Handler)
 	}
