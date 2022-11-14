@@ -33,8 +33,8 @@ paths:
                 items:
                   $ref: "#/definitions/HealthCheckResource"
 
-  /users:
-    get:
+  /filtered/users/:
+    post:
       tags:
         - user
       operationId: getUsersByFilters
@@ -59,7 +59,6 @@ paths:
                 type: string
                 description: Value is used for getting next user list. It is returned in response
                 x-nullable: true
-
       responses:
         200:
           description: Users are filtered by criteria
@@ -74,6 +73,7 @@ paths:
           schema:
             $ref: "#/definitions/Error"
 
+  /users:
     post:
       tags:
         - user

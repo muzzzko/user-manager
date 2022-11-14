@@ -10,7 +10,8 @@
 - zookeeper: 3.4.13
 
 ### Get started
-0) Clone repository to github/user-manager folder
+0) Clone repository to github folder end enter the user-manager folder
+
 
 1) Generate server and client
 

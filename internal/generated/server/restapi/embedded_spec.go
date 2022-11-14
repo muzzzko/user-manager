@@ -33,45 +33,8 @@ func init() {
     "version": "1.0.0"
   },
   "paths": {
-    "/health/check": {
-      "get": {
-        "tags": [
-          "healthcheck"
-        ],
-        "responses": {
-          "200": {
-            "description": "All services are available",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "resources": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/HealthCheckResource"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Part of services are unavailable",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "resources": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/HealthCheckResource"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/users": {
-      "get": {
+    "/filtered/users/": {
+      "post": {
         "tags": [
           "user"
         ],
@@ -126,7 +89,46 @@ func init() {
             }
           }
         }
-      },
+      }
+    },
+    "/health/check": {
+      "get": {
+        "tags": [
+          "healthcheck"
+        ],
+        "responses": {
+          "200": {
+            "description": "All services are available",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "resources": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/HealthCheckResource"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Part of services are unavailable",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "resources": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/HealthCheckResource"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users": {
       "post": {
         "tags": [
           "user"
@@ -489,45 +491,8 @@ func init() {
     "version": "1.0.0"
   },
   "paths": {
-    "/health/check": {
-      "get": {
-        "tags": [
-          "healthcheck"
-        ],
-        "responses": {
-          "200": {
-            "description": "All services are available",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "resources": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/HealthCheckResource"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Part of services are unavailable",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "resources": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/definitions/HealthCheckResource"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/users": {
-      "get": {
+    "/filtered/users/": {
+      "post": {
         "tags": [
           "user"
         ],
@@ -582,7 +547,46 @@ func init() {
             }
           }
         }
-      },
+      }
+    },
+    "/health/check": {
+      "get": {
+        "tags": [
+          "healthcheck"
+        ],
+        "responses": {
+          "200": {
+            "description": "All services are available",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "resources": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/HealthCheckResource"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Part of services are unavailable",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "resources": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/HealthCheckResource"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users": {
       "post": {
         "tags": [
           "user"
