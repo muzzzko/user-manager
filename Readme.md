@@ -10,6 +10,8 @@
 - zookeeper: 3.4.13
 
 ### Get started
+0) Clone repository to github/user-manager folder
+
 1) Generate server and client
 
 ```
@@ -55,6 +57,14 @@ make run-test-env-in-docker
 ```
 make run-test-in-docker
 ```
+
+To stop tests environment run
+```
+make stop-test-env-in-docker
+```
+
+### Docs
+You can find docs in http://localhost:8000/docs after run service
 
 # About solution
 

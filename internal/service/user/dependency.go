@@ -11,6 +11,7 @@ type userRepository interface {
 	Delete(ctx context.Context, userID strfmt.UUID) error
 	Update(ctx context.Context, user entity.User) error
 
+	GetByID(ctx context.Context, id strfmt.UUID) (entity.User, error)
 	GetUsersByFilters(
 		ctx context.Context,
 		filters map[string]string,

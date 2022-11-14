@@ -84,20 +84,43 @@ func (s *Service) DeleteUser(ctx context.Context, userID strfmt.UUID) error {
 func (s *Service) UpdateUser(ctx context.Context, updatingUser models.UpdatingUser) (models.User, error) {
 	ctxLogger := logger.GetFromContext(ctx)
 
-	country, err := s.countryRepo.GetCountryByCode(ctx, updatingUser.CountryCode)
+	user, err := s.userRepo.GetByID(ctx, updatingUser.ID)
 	if err != nil {
 		return models.User{}, err
 	}
 
-	passwordHash, err := password.Hash(updatingUser.Password)
-	if err != nil {
-		return models.User{}, err
+	if updatingUser.CountryCode != nil {
+		if *updatingUser.CountryCode != user.Country.Code {
+			country, err := s.countryRepo.GetCountryByCode(ctx, *updatingUser.CountryCode)
+			if err != nil {
+				return models.User{}, err
+			}
+
+			user.Country = country
+		}
 	}
 
-	user := mapModelUserInfoToEntityUser(updatingUser.UserInfo)
-	user.ID = updatingUser.ID
-	user.Country = country
-	user.PasswordHash = passwordHash
+	if updatingUser.Password != nil {
+		passwordHash, err := password.Hash(*updatingUser.Password)
+		if err != nil {
+			return models.User{}, err
+		}
+
+		user.PasswordHash = passwordHash
+	}
+
+	if updatingUser.FirstName != nil {
+		user.FirstName = *updatingUser.FirstName
+	}
+	if updatingUser.LastName != nil {
+		user.LastName = *updatingUser.LastName
+	}
+	if updatingUser.Nickname != nil {
+		user.Nickname = *updatingUser.Nickname
+	}
+	if updatingUser.Email != nil {
+		user.Email = *updatingUser.Email
+	}
 
 	if err := s.userRepo.Update(ctx, user); err != nil {
 		return models.User{}, err

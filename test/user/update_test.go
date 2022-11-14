@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"github/user-manager/test/tools/pointer"
 	"log"
 	"testing"
 
@@ -55,15 +56,13 @@ func TestUpdate(t *testing.T) {
 
 		paramsForUpdating := user.NewUpdateUserParams()
 		paramsForUpdating.Body = &models.UpdatingUser{
-			UserInfo: models.UserInfo{
-				FirstName:   userEntity.FirstName,
-				LastName:    userEntity.LastName,
-				Nickname:    userEntity.Nickname,
-				Email:       userEntity.Email,
-				CountryCode: userEntity.Country.Code,
-			},
-			Password: pswd,
-			ID:       res.Payload.ID,
+			FirstName:   &userEntity.FirstName,
+			LastName:    &userEntity.LastName,
+			Nickname:    &userEntity.Nickname,
+			Email:       &userEntity.Email,
+			CountryCode: &userEntity.Country.Code,
+			Password:    &pswd,
+			ID:          res.Payload.ID,
 		}
 
 		_, err = umClient.User.UpdateUser(paramsForUpdating)
@@ -102,9 +101,13 @@ func TestUpdate(t *testing.T) {
 
 		paramsForUpdating := user.NewUpdateUserParams()
 		paramsForUpdating.Body = &models.UpdatingUser{
-			UserInfo: userInfo,
-			Password: "42adfAfLK",
-			ID:       res.Payload.ID,
+			FirstName:   &userInfo.FirstName,
+			LastName:    &userInfo.LastName,
+			Nickname:    &userInfo.Nickname,
+			Email:       &userInfo.Email,
+			CountryCode: &userInfo.CountryCode,
+			Password:    pointer.MakeFromString("42adfAfLK"),
+			ID:          res.Payload.ID,
 		}
 
 		_, err = umClient.User.UpdateUser(paramsForUpdating)
@@ -115,15 +118,8 @@ func TestUpdate(t *testing.T) {
 	t.Run("update user with invalid email", func(tt *testing.T) {
 		params := user.NewUpdateUserParams()
 		params.Body = &models.UpdatingUser{
-			UserInfo: models.UserInfo{
-				FirstName:   "Egor",
-				LastName:    "Shestakov",
-				Nickname:    "muzzzko",
-				Email:       "invalid",
-				CountryCode: "UK",
-			},
-			Password: "42adfAfLK",
-			ID:       strfmt.UUID(uuid.New().String()),
+			Email: pointer.MakeFromString("invalid"),
+			ID:    strfmt.UUID(uuid.New().String()),
 		}
 
 		_, err := umClient.User.UpdateUser(params)
@@ -132,20 +128,28 @@ func TestUpdate(t *testing.T) {
 	})
 
 	t.Run("update user with not existed country", func(tt *testing.T) {
-		params := user.NewUpdateUserParams()
-		params.Body = &models.UpdatingUser{
+		paramsForCreating := user.NewCreateUserParams()
+		paramsForCreating.Body = &models.CreatingUser{
 			UserInfo: models.UserInfo{
 				FirstName:   "Egor",
 				LastName:    "Shestakov",
 				Nickname:    "muzzzko",
-				Email:       "johnsmith@gmail.com",
-				CountryCode: "TK",
+				Email:       "countrynotexists@gmail.com",
+				CountryCode: "UK",
 			},
 			Password: "42adfAfLK",
-			ID:       strfmt.UUID(uuid.New().String()),
 		}
 
-		_, err := umClient.User.UpdateUser(params)
+		res, err := umClient.User.CreateUser(paramsForCreating)
+		assert.Nil(tt, err)
+
+		params := user.NewUpdateUserParams()
+		params.Body = &models.UpdatingUser{
+			CountryCode: pointer.MakeFromString("TK"),
+			ID:          res.Payload.ID,
+		}
+
+		_, err = umClient.User.UpdateUser(params)
 		errBody := err.(*user.UpdateUserUnprocessableEntity)
 		assert.Equal(tt, errorpkg.GetDomainErrCode(context.Background(), errorpkg.CountryNotFound), errBody.Payload.Code)
 	})
@@ -153,15 +157,8 @@ func TestUpdate(t *testing.T) {
 	t.Run("update user which doesn't exist", func(tt *testing.T) {
 		params := user.NewUpdateUserParams()
 		params.Body = &models.UpdatingUser{
-			UserInfo: models.UserInfo{
-				FirstName:   "Egor",
-				LastName:    "Shestakov",
-				Nickname:    "muzzzko",
-				Email:       "johnsmith@gmail.com",
-				CountryCode: "UK",
-			},
-			Password: "42adfAfLK",
-			ID:       strfmt.UUID(uuid.New().String()),
+			FirstName: pointer.MakeFromString("Egor"),
+			ID:        strfmt.UUID(uuid.New().String()),
 		}
 
 		_, err := umClient.User.UpdateUser(params)

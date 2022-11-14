@@ -165,7 +165,7 @@ func (a *Client) UpdateUser(params *UpdateUserParams, opts ...ClientOption) (*Up
 	}
 	op := &runtime.ClientOperation{
 		ID:                 "updateUser",
-		Method:             "PUT",
+		Method:             "PATCH",
 		PathPattern:        "/users",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},

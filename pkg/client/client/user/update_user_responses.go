@@ -86,11 +86,11 @@ func (o *UpdateUserOK) IsCode(code int) bool {
 }
 
 func (o *UpdateUserOK) Error() string {
-	return fmt.Sprintf("[PUT /users][%d] updateUserOK  %+v", 200, o.Payload)
+	return fmt.Sprintf("[PATCH /users][%d] updateUserOK  %+v", 200, o.Payload)
 }
 
 func (o *UpdateUserOK) String() string {
-	return fmt.Sprintf("[PUT /users][%d] updateUserOK  %+v", 200, o.Payload)
+	return fmt.Sprintf("[PATCH /users][%d] updateUserOK  %+v", 200, o.Payload)
 }
 
 func (o *UpdateUserOK) GetPayload() *models.User {
@@ -149,11 +149,11 @@ func (o *UpdateUserUnprocessableEntity) IsCode(code int) bool {
 }
 
 func (o *UpdateUserUnprocessableEntity) Error() string {
-	return fmt.Sprintf("[PUT /users][%d] updateUserUnprocessableEntity  %+v", 422, o.Payload)
+	return fmt.Sprintf("[PATCH /users][%d] updateUserUnprocessableEntity  %+v", 422, o.Payload)
 }
 
 func (o *UpdateUserUnprocessableEntity) String() string {
-	return fmt.Sprintf("[PUT /users][%d] updateUserUnprocessableEntity  %+v", 422, o.Payload)
+	return fmt.Sprintf("[PATCH /users][%d] updateUserUnprocessableEntity  %+v", 422, o.Payload)
 }
 
 func (o *UpdateUserUnprocessableEntity) GetPayload() *models.Error {
@@ -212,11 +212,11 @@ func (o *UpdateUserInternalServerError) IsCode(code int) bool {
 }
 
 func (o *UpdateUserInternalServerError) Error() string {
-	return fmt.Sprintf("[PUT /users][%d] updateUserInternalServerError  %+v", 500, o.Payload)
+	return fmt.Sprintf("[PATCH /users][%d] updateUserInternalServerError  %+v", 500, o.Payload)
 }
 
 func (o *UpdateUserInternalServerError) String() string {
-	return fmt.Sprintf("[PUT /users][%d] updateUserInternalServerError  %+v", 500, o.Payload)
+	return fmt.Sprintf("[PATCH /users][%d] updateUserInternalServerError  %+v", 500, o.Payload)
 }
 
 func (o *UpdateUserInternalServerError) GetPayload() *models.Error {

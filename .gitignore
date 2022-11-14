@@ -1,2 +1,4 @@
 .idea
-tmp/todo.txt
+tmp
+internal/generated/server/models
+internal/generated/server/restapi/operations

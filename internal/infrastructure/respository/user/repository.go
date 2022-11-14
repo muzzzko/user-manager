@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"github.com/go-openapi/strfmt"
 	"github.com/jackc/pgx/v5"
@@ -26,6 +27,50 @@ func NewRepository(master *pgxpool.Pool, slave *pgxpool.Pool) *Repository {
 		master: master,
 		slave:  slave,
 	}
+}
+
+func (r *Repository) GetByID(ctx context.Context, id strfmt.UUID) (entity.User, error) {
+	query := `
+	select 
+		u.id,
+		u.first_name,
+		u.last_name,
+		u.nickname,
+		u.email,
+		u.password_hash,
+		c.id,
+		c.code
+	from 
+	    user_profile u
+	join 
+		country c on u.country_id = c.id
+	where u.id = $1
+`
+
+	user := entity.User{}
+	country := entity.Country{}
+	res := r.slave.QueryRow(ctx, query, id)
+	err := res.Scan(
+		&user.ID,
+		&user.FirstName,
+		&user.LastName,
+		&user.Nickname,
+		&user.Email,
+		&user.PasswordHash,
+		&country.ID,
+		&country.Code,
+	)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return user, errorpkg.UserNotFound
+		}
+
+		return user, fmt.Errorf("fail get user by id: %w", err)
+	}
+
+	user.Country = country
+
+	return user, err
 }
 
 func (r *Repository) Save(ctx context.Context, user entity.User) error {

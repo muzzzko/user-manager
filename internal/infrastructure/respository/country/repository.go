@@ -37,7 +37,7 @@ func (r *Repository) GetCountryByCode(ctx context.Context, code string) (entity.
 	err := res.Scan(&country.ID, &country.Code)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return country, fmt.Errorf("country not found: %w", errorpkg.CountryNotFound)
+			return country, errorpkg.CountryNotFound
 		}
 
 		return country, fmt.Errorf("fail to get country: %w", err)
