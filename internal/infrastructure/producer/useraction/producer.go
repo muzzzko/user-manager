@@ -2,8 +2,8 @@ package useraction
 
 import (
 	"context"
-	"github.com/go-openapi/strfmt"
 
+	"github.com/go-openapi/strfmt"
 	"github/user-manager/pkg/event"
 )
 

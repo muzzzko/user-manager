@@ -15,4 +15,18 @@ COPY . .
 
 RUN make build-in-docker
 
-ENTRYPOINT /bin/$project_name
+CMD []
+
+
+
+
+
+FROM busybox:glibc as production
+
+ARG PROJECT_NAME
+ENV project_name=$PROJECT_NAME
+
+COPY --from=builder /bin/$project_name /bin/app
+
+ENTRYPOINT ["/bin/app"]
+
