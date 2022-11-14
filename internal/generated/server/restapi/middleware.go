@@ -1,9 +1,12 @@
 package restapi
 
 import (
+	"encoding/json"
 	"net/http"
 	"runtime/debug"
 
+	errorpkg "github/user-manager/internal/error"
+	"github/user-manager/internal/generated/server/models"
 	loggerpkg "github/user-manager/tools/logger"
 )
 
@@ -21,6 +24,17 @@ func panicRecoveryMiddleware(handler http.Handler, logger loggerpkg.ILogger) htt
 		defer func() {
 			if p := recover(); p != nil {
 				logger.WithPanic(string(debug.Stack())).Error("panic recovered")
+
+				w.Header().Add("content-type", "application/json")
+				w.WriteHeader(http.StatusInternalServerError)
+
+				err := models.Error{
+					Code:    errorpkg.GetInternalServiceErrCode(),
+					Message: "something went wrong",
+				}
+				resp, _ := json.Marshal(err)
+
+				_, _ = w.Write(resp)
 			}
 		}()
 

@@ -86,11 +86,15 @@ func configureHandlers(api *operations.UserManagerAPI, cfg config.Service, logge
 	// producers
 	// -------------
 
-	asyncProducer, err := sarama.NewAsyncProducer([]string{fmt.Sprintf("%s:%d", cfg.Kafka.Host, cfg.Kafka.Port)}, nil)
+	saramaClient, err := sarama.NewClient([]string{fmt.Sprintf("%s:%d", cfg.Kafka.Host, cfg.Kafka.Port)}, nil)
+	if err != nil {
+		logger.WithError(err).Fatal("fail to create samara client")
+	}
+	saramaProducer, err := sarama.NewAsyncProducerFromClient(saramaClient)
 	if err != nil {
 		logger.WithError(err).Fatal("fail to create samara producer")
 	}
-	eventProducer := kafka.NewProducer(asyncProducer)
+	eventProducer := kafka.NewProducer(saramaProducer)
 	userEventProducer := useraction.NewProducer(eventProducer)
 
 	// -------------
@@ -110,6 +114,9 @@ func configureHandlers(api *operations.UserManagerAPI, cfg config.Service, logge
 		},
 		func() (string, bool) {
 			return "postgres slave", slaveConn.Ping(context.Background()) == nil
+		},
+		func() (string, bool) {
+			return "kafka", len(saramaClient.Brokers()) > 0
 		},
 	)
 

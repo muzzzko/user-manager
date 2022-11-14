@@ -12,4 +12,6 @@ var (
 	CountryNotFound   = fmt.Errorf("country not found: %w", DomainError)
 	UserAlreadyExists = fmt.Errorf("user already exists: %w", DomainError)
 	UserNotFound      = fmt.Errorf("user not found: %w", DomainError)
+
+	InvalidTopicName = fmt.Errorf("invalid topic name")
 )

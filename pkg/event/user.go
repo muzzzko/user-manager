@@ -2,8 +2,10 @@ package event
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/Shopify/sarama"
 	"github.com/go-playground/validator"
+	errorpkg "github/user-manager/internal/error"
 	"time"
 )
 
@@ -52,7 +54,9 @@ func (e *UserActionEvent) GetTopic() string {
 func (e *UserActionEvent) Validate() error {
 	validate := validator.New()
 
-	//TODO check topic
+	if e.GetTopic() != userEventTopic {
+		return fmt.Errorf(fmt.Sprintf("unknown topid: %s: %w", e.GetTopic(), errorpkg.InvalidTopicName))
+	}
 
 	return validate.Struct(e)
 }
