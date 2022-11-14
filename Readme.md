@@ -38,7 +38,10 @@ make build-migration-image
 make run-in-docker
 ```
 
-Service will be ready on http://localhost:8000
+The service will be ready on http://localhost:8000
+
+**_NOTE:_**  Check running containers with `docker ps`. 
+There should be four. If there is less, then try again `make run-in-docker`
 
 To stop it run
 ```
@@ -65,7 +68,7 @@ make stop-test-env-in-docker
 ```
 
 ### Docs
-You can find docs in http://localhost:8000/docs after run service
+You can find docs in http://localhost:8000/docs after the service is run
 
 # About solution
 
@@ -102,7 +105,7 @@ Layer contains
 - Producer to send async notifications to kafka 
 - Repository to store data in postgres
 
-We can change postgres to mysql or kafka to rabbitMQ easy and don't change domain logic.
+We can change postgres to mysql or kafka to rabbitMQ easily without changing domain logic.
 
 #### Domain
 Layer contains services for business logic implementation. This layer doesn't depend on infrastructure.
@@ -125,7 +128,7 @@ Layer contains
 
 # Improvements
 1) Now if server gets error during producing event to kafka service will log error and event will be lost. Need to store such event to DB and implement cron to retry failed events. But should be careful with event order.
-3) Pagination works until PO doesn't want to sort by created_at. That why I used id as UUID. I understand that is more secure, but if security teams allows it's better to change to int. Nevertheless I can add index (id, created_at) and get required result with UUID ID.
+3) Pagination works until PO doesn't want to sort by created_at. That why I used id as UUID. I understand that is more secure, but if security teams allows it, it's better to change to int. Nevertheless I can add index (id, created_at) and get required result with UUID ID.
 4) Add tools 
 - prometheus for gathering metrics
 - golangci-lint  
