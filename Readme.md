@@ -10,7 +10,12 @@
 - zookeeper: 3.4.13
 
 ### Get started
-0) Clone repository to github folder end enter the user-manager folder
+0) Clone repository to github/user-manager folder
+
+```
+git clone git@github.com:muzzzko/user-manager.git ./github/user-manager/
+cd github/user-manager/
+```
 
 
 1) Generate server and client
