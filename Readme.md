@@ -133,8 +133,9 @@ Layer contains
 
 # Improvements
 1) Now if server gets error during producing event to kafka service will log error and event will be lost. Need to store such event to DB and implement cron to retry failed events. But should be careful with event order.
-3) Pagination works until PO doesn't want to sort by created_at. That why I used id as UUID. I understand that is more secure, but if security teams allows it, it's better to change to int. Nevertheless I can add index (id, created_at) and get required result with UUID ID.
+2) Pagination works until PO doesn't want to sort by created_at. That why I used id as UUID. I understand that is more secure, but if security teams allows it, it's better to change to int. Nevertheless I can add index (id, created_at) and get required result with UUID ID.
+3) Add cache for getting user with filter method
 4) Add tools 
 - prometheus for gathering metrics
-- golangci-lint  
+- golangci-lint
 5) Setup logger with env variable to control output and log level
